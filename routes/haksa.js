@@ -87,6 +87,77 @@ router.post('/pro/delete', async function(req,res){
 router.get('/stu', function(req, res, next) {
   res.render('index',{title:'학생관리',pageName:'haksa/students.ejs'});
 });
+
+
+router.get('/stu/list.json', async function (req, res) {
+    let con;
+    try {
+        con = await getConnection();
+        const sql="select * from view_students";
+        const result = await con.execute(sql, {}, {outFormat:oracledb.OUT_FORMAT_OBJECT});
+        res.send(result.rows);
+    } catch (err) {
+
+    } finally {
+        if(con) await con.close();
+    }
+});
+//학생 등록페이지
+router.get('/stu/insert', async function(req, res){
+    let con;
+    let code;
+    try{
+        const con = await getConnection();
+        const sql="select max(scode)+1 from students";
+        const result = await con.execute(sql);
+        code = result.rows[0][0];
+        console.log(code);
+    }catch(err){
+        console.log(err);
+    }finally{
+        if(con) con.close();
+    }
+    res.render('index', {title: '학생입력', pageName:'haksa/students_insert.ejs', code});
+});
+//학생 등록
+router.post('/stu/insert', async function(req,res){
+  const scode = req.body.scode;
+  const sname = req.body.sname;
+  const dept = req.body.dept;
+  const birthday = req.body.birthday;
+  const year = req.body.year;
+  const advisor = req.body.pcode;
+  let con;
+  try{
+    con = await getConnection();
+    let sql ="insert into students(scode,sname,dept,birthday,year,advisor)";
+    sql += "values(:scode,:sname,:dept,:birthday,:year,:advisor)";
+    await con.execute(sql,{scode,sname,dept,birthday,year,advisor},{autoCommit:true});
+     res.sendStatus(200);
+  }catch(err){
+    res.sendStatus(500);
+    // console.log(err);
+  }finally{
+    if(con)await con.close();
+  }
+ 
+});
+//학생삭제
+router.post('/stu/delete', async function(req,res){
+  const scode = req.body.scode;
+  let con;
+  try{
+    con = await getConnection();
+    let sql = "delete from students where scode=:scode";
+    await con.execute(sql, {scode},{autoCommit:true});
+    res.sendStatus(200);
+  }catch(err){
+    res.sendStatus(500);
+  }
+  finally{
+    if(con) await con.close();
+  }
+})
 /* manage professors page */
 router.get('/cou', function(req, res, next) {
   res.render('index',{title:'강좌관리',pageName:'haksa/courses.ejs'});

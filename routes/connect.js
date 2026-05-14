@@ -9,7 +9,7 @@ async function getConnection()
             password:'pass',
             connectString:'localhost:1521/xe'
         });
-        console.log('DB 연결 성공');
+        //console.log('DB 연결 성공');
         return connection;
     }
     catch(err)
