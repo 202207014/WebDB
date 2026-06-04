@@ -1,10 +1,10 @@
 <div class="my-5">
-    <h1 class="text-center mb-5">글쓰기</h1>
+    <h1 class="text-center mb-5">글수정</h1>
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8">
             <form name="frm">
-                <input name="title" class="form-control mb-3 border-dark" placeholder="제목을 입력하세요">
-                <textarea name="content" class="form-control mb-3 border-dark" rows="10" placeholder="내용을 입력하세요"></textarea>
+                <input name="title" value="<%=post.TITLE%>" class="form-control mb-3 border-dark" placeholder="제목을 입력하세요">
+                <textarea name="content" class="form-control mb-3 border-dark" rows="10" placeholder="내용을 입력하세요"><%=post.CONTENT%></textarea>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary px-5">저장</button>
                     <button type="reset" class="btn btn-secondary px-5">취소</button>
@@ -18,26 +18,28 @@
         e.preventDefault();
         const title = $(frm.title).val();
         const content = $(frm.content).val();
+        const id = "<%=post.ID%>";
         if(title == ""){
             alert("제목을 입력하세요");
             $(frm.title).focus();
         }
         else{
-            //게시글 등록
+           if(!confirm(`${id}번 게시글을 수정하겠습니까?`)) return;
+            //게시글 수정
             $.ajax({
                 type :"post",
-                url : "/posts/insert",
-                data:{title,content,writer:scode},
+                url : "/posts/update",
+                data:{id,title,content},
                 success : function(){
-                    alert("등록 성공!");
-                    location.href="/posts"
+                    alert("수정 성공!");
+                    location.href=`/posts/${id}`
                 },
                 error : function()
                 {
-                    alert("등록 실패");
+                    alert("수정 실패");
                 }
             
-            })
+            });
         }
     });
 </script>

@@ -36,7 +36,11 @@
             {{#each .}}
                 <tr>
                     <td>{{ID}}</td>
-                    <td class="text-start ps-3">{{TITLE}}</td>
+                    <td class="text-start ps-3">
+                        <a href="/posts/{{ID}}" class="text-decoration-none text-dark fw-semibold link-primary">
+                            {{TITLE}}
+                        </a>
+                    </td>
                     <td>{{SNAME}}</td>
                     <td>{{FMT_DATE}}</td>
                 </tr>
@@ -61,18 +65,15 @@
         if(scode){
             location.href = "/posts/insert";
         } else {
-            // 비로그인 시 타겟 저장 후 로그인 창으로 리다이렉트
             sessionStorage.setItem("target", "/posts/insert");
-            location.href = "/users/login"; // 경로 슬래시(/) 보완
+            location.href = "/users/login"; 
         }
     });
 
-    // [검색 폼 이벤트]
-    // 2. 정석적인 제이쿼리 선택자로 변경하여 표준성 확보
     $("form[name='frm']").on("submit", function(e){
         e.preventDefault();
-        word = $("input[name='word']").val(); // 값 추출 방식 정석화
-        page = 1; // 검색 결과는 무조건 1페이지부터
+        word = $("input[name='word']").val(); 
+        page = 1; 
         getList();
     });
 
